@@ -4,18 +4,18 @@
     <CodeAnalysisRuleSet>../../stylecop.analyzers.ruleset</CodeAnalysisRuleSet>
     <Company>MooVC</Company>
     <Copyright>MooVC © 2021</Copyright>
-    <Description>Tests library designed to encapsulate the Newtonsoft.Json implementation through the standardized MooVC.Serialization interpretation, facilitating ease of consumption within inner layers without direct coupling to infrastructural concerns.</Description>
+    <Description>Tests library designed to encapsulate the Newtonsoft.Json.Bson implementation through the standardized MooVC.Serialization interpretation, facilitating ease of consumption within inner layers without direct coupling to infrastructural concerns.</Description>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <IsPackable>false</IsPackable>
     <LangVersion>latest</LangVersion>
     <NoWarn>NU5105;CS0618</NoWarn>
     <Nullable>enable</Nullable>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/MooVC/moovc.infrastructure.serialization.json.newtonsoft</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/MooVC/moovc.infrastructure.serialization.bson.newtonsoft</PackageProjectUrl>
     <Product>MooVC</Product>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <RepositoryUrl>https://github.com/MooVC/moovc.infrastructure.serialization.json.newtonsoft.git</RepositoryUrl>
-    <RootNamespace>MooVC.Infrastructure.Serialization.Json.Newtonsoft</RootNamespace>
+    <RepositoryUrl>https://github.com/MooVC/moovc.infrastructure.serialization.bson.newtonsoft.git</RepositoryUrl>
+    <RootNamespace>MooVC.Infrastructure.Serialization.Bson.Newtonsoft</RootNamespace>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
@@ -25,7 +25,6 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.*" />
     <PackageReference Include="Moq" Version="4.*" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.*" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.*">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -37,6 +36,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MooVC.Infrastructure.Serialization.Json.Newtonsoft\MooVC.Infrastructure.Serialization.Json.Newtonsoft.csproj" />
+    <ProjectReference Include="..\MooVC.Infrastructure.Serialization.Bson.Newtonsoft\MooVC.Infrastructure.Serialization.Bson.Newtonsoft.csproj" />
   </ItemGroup>
 </Project>

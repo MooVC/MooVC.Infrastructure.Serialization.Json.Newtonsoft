@@ -1,5 +1,6 @@
-﻿namespace MooVC.Infrastructure.Serialization.Json.Newtonsoft.SerializerTests
+﻿namespace MooVC.Infrastructure.Serialization.Bson.Newtonsoft.SerializerTests
 {
+    using System;
     using System.Text;
     using global::Newtonsoft.Json;
     using Xunit;
@@ -13,38 +14,8 @@
             var settings = new JsonSerializerSettings();
 
             AssertEqual(
-                Serializer.DefaultBufferSize,
                 Serializer.DefaultEncoding,
-                serializer,
-                settings);
-        }
-
-        [Fact]
-        public void GivenABufferSizeThenASerializerIsCreatedWithTheBufferSizeApplied()
-        {
-            const int BufferSize = 32;
-            var serializer = new Serializer(bufferSize: 32);
-            var settings = new JsonSerializerSettings();
-
-            AssertEqual(
-                BufferSize,
-                Serializer.DefaultEncoding,
-                serializer,
-                settings);
-        }
-
-        [Theory]
-        [InlineData(0)]
-        [InlineData(-1)]
-        [InlineData(1)]
-        public void GivenABelowMinimumBufferSizeThenASerializerIsCreatedWithTheMinimumBufferSizeApplied(int bufferSize)
-        {
-            var serializer = new Serializer(bufferSize: bufferSize);
-            var settings = new JsonSerializerSettings();
-
-            AssertEqual(
-                Serializer.MinimumBufferSize,
-                Serializer.DefaultEncoding,
+                DateTimeKind.Unspecified,
                 serializer,
                 settings);
         }
@@ -57,8 +28,23 @@
             var settings = new JsonSerializerSettings();
 
             AssertEqual(
-                Serializer.DefaultBufferSize,
                 encoding,
+                DateTimeKind.Unspecified,
+                serializer,
+                settings);
+        }
+
+        [Theory]
+        [InlineData(DateTimeKind.Utc)]
+        [InlineData(DateTimeKind.Local)]
+        public void GivenAKindThenASerializerIsCreatedWithTheKindApplied(DateTimeKind kind)
+        {
+            var serializer = new Serializer(kind: kind);
+            var settings = new JsonSerializerSettings();
+
+            AssertEqual(
+                Serializer.DefaultEncoding,
+                kind,
                 serializer,
                 settings);
         }
@@ -79,20 +65,20 @@
             var serializer = new Serializer(settings: settings);
 
             AssertEqual(
-                Serializer.DefaultBufferSize,
                 Serializer.DefaultEncoding,
+                DateTimeKind.Unspecified,
                 serializer,
                 settings);
         }
 
         private static void AssertEqual(
-            int bufferSize,
             Encoding encoding,
+            DateTimeKind kind,
             Serializer serializer,
             JsonSerializerSettings settings)
         {
-            Assert.Equal(bufferSize, serializer.BufferSize);
             Assert.Equal(encoding, serializer.Encoding);
+            Assert.Equal(kind, serializer.Kind);
             Assert.Equal(settings.DateTimeZoneHandling, serializer.Json.DateTimeZoneHandling);
 
             AssertEqual(settings, serializer);

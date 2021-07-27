@@ -1,4 +1,4 @@
-﻿namespace MooVC.Infrastructure.Serialization.Json.Newtonsoft
+﻿namespace MooVC.Infrastructure.Serialization.Bson.Newtonsoft
 {
     using System;
     using System.Collections.Generic;
@@ -6,33 +6,32 @@
     using System.Linq;
     using System.Text;
     using global::Newtonsoft.Json;
+    using global::Newtonsoft.Json.Bson;
     using MooVC.Serialization;
     using static System.String;
-    using static MooVC.Infrastructure.Serialization.Json.Newtonsoft.Resources;
+    using static MooVC.Infrastructure.Serialization.Bson.Newtonsoft.Resources;
 
     public sealed class Serializer
         : SynchronousSerializer
     {
-        public const int DefaultBufferSize = 1024;
-        public const int MinimumBufferSize = 8;
         public static readonly Encoding DefaultEncoding = new UTF8Encoding(false, true);
         private readonly Lazy<JsonSerializer> json;
 
         public Serializer(
-            int bufferSize = DefaultBufferSize,
             Encoding? encoding = default,
+            DateTimeKind kind = DateTimeKind.Unspecified,
             JsonSerializerSettings? settings = default)
         {
-            BufferSize = Math.Max(bufferSize, MinimumBufferSize);
             Encoding = encoding ?? DefaultEncoding;
             json = new Lazy<JsonSerializer>(() => JsonSerializer.CreateDefault(settings));
+            Kind = kind;
         }
+
+        public Encoding Encoding { get; }
 
         public JsonSerializer Json => json.Value;
 
-        public int BufferSize { get; }
-
-        public Encoding Encoding { get; }
+        public DateTimeKind Kind { get; }
 
         protected override T PerformDeserialize<T>(IEnumerable<byte> data)
         {
@@ -43,10 +42,13 @@
 
         protected override T PerformDeserialize<T>(Stream source)
         {
-            using var reader = new StreamReader(source);
-            using var text = new JsonTextReader(reader);
+            using var binary = new BinaryReader(source, Encoding, true);
+            using var reader = new BsonDataReader(source)
+            {
+                DateTimeKindHandling = Kind,
+            };
 
-            T? result = Json.Deserialize<T>(text);
+            T? result = Json.Deserialize<T>(reader);
 
             if (result is null)
             {
@@ -69,13 +71,16 @@
 
         protected override void PerformSerialize<T>(T instance, Stream target)
         {
-            using var writer = new StreamWriter(target, Encoding, BufferSize, true);
-            using var text = new JsonTextWriter(writer);
+            using var binary = new BinaryWriter(target, Encoding, true);
+            using var writer = new BsonDataWriter(binary)
+            {
+                DateTimeKindHandling = Kind,
+            };
 
-            Json.Serialize(text, instance);
+            Json.Serialize(writer, instance);
 
-            text.Flush();
             writer.Flush();
+            binary.Flush();
         }
     }
 }
