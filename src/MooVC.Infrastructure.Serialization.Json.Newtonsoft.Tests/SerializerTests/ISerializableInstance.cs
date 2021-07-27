@@ -1,4 +1,4 @@
-﻿namespace MooVC.Infrastructure.Serialization.Bson.Newtonsoft.SerializerTests
+﻿namespace MooVC.Infrastructure.Serialization.Json.Newtonsoft.SerializerTests
 {
     using System.Collections.Generic;
 
