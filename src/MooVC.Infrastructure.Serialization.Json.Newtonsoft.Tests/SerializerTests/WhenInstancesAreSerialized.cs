@@ -208,7 +208,7 @@
         }
 
         [Fact]
-        public async Task GivenAnInstancedOfAClassWithAReferencedObjectWhenSerializedToAStreamThenACloneOfThatInstanceIsDeserializedAsync()
+        public async Task GivenAnInstancesOfAClassWithAReferencedObjectWhenSerializedToAStreamThenACloneOfThatInstanceIsDeserializedAsync()
         {
             IEnumerable<ISerializableInstance> originals = new[]
             {
