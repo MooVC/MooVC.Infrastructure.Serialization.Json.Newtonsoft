@@ -1,11 +1,10 @@
 ﻿namespace MooVC.Infrastructure.Serialization.Json.Newtonsoft
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Text;
     using global::Newtonsoft.Json;
+    using MooVC.Compression;
     using MooVC.Serialization;
     using static System.String;
     using static MooVC.Infrastructure.Serialization.Json.Newtonsoft.Resources;
@@ -15,13 +14,15 @@
     {
         public const int DefaultBufferSize = 1024;
         public const int MinimumBufferSize = 8;
-        public static readonly Encoding DefaultEncoding = new UTF8Encoding(false, true);
+        public static readonly Encoding DefaultEncoding = Encoding.UTF8;
         private readonly Lazy<JsonSerializer> json;
 
         public Serializer(
             int bufferSize = DefaultBufferSize,
             Encoding? encoding = default,
+            ICompressor? compressor = default,
             JsonSerializerSettings? settings = default)
+            : base(compressor: compressor)
         {
             BufferSize = Math.Max(bufferSize, MinimumBufferSize);
             Encoding = encoding ?? DefaultEncoding;
@@ -33,13 +34,6 @@
         public int BufferSize { get; }
 
         public Encoding Encoding { get; }
-
-        protected override T PerformDeserialize<T>(IEnumerable<byte> data)
-        {
-            using var stream = new MemoryStream(data.ToArray());
-
-            return PerformDeserialize<T>(stream);
-        }
 
         protected override T PerformDeserialize<T>(Stream source)
         {
@@ -56,15 +50,6 @@
             }
 
             return result;
-        }
-
-        protected override IEnumerable<byte> PerformSerialize<T>(T instance)
-        {
-            using var stream = new MemoryStream();
-
-            PerformSerialize(instance, stream);
-
-            return stream.ToArray();
         }
 
         protected override void PerformSerialize<T>(T instance, Stream target)
